@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>One Question 💜</title>
+  <style>
+    :root{
+      --bg1:#1a102a;
+      --bg2:#2a1450;
+      --card: rgba(255,255,255,.08);
+      --stroke: rgba(255,255,255,.14);
+      --text:#f6f1ff;
+      --muted: rgba(246,241,255,.75);
+      --purple:#a855f7;
+      --purple2:#7c3aed;
+      --pink:#fb7185;
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --radius: 26px;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 15% 10%, rgba(168,85,247,.35), transparent 55%),
+        radial-gradient(900px 600px at 85% 20%, rgba(251,113,133,.20), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      overflow:hidden;
+    }
+
+    /* floating hearts */
+    .hearts{
+      position:fixed; inset:0; pointer-events:none; opacity:.65;
+      filter: drop-shadow(0 10px 24px rgba(0,0,0,.35));
+    }
+    .heart{
+      position:absolute;
+      width:14px; height:14px;
+      transform: rotate(45deg);
+      background: rgba(168,85,247,.55);
+      animation: floatUp 8s linear infinite;
+      border-radius:4px;
+    }
+    .heart::before, .heart::after{
+      content:"";
+      position:absolute;
+      width:14px; height:14px;
+      background: inherit;
+      border-radius:50%;
+    }
+    .heart::before{ left:-7px; top:0; }
+    .heart::after{ top:-7px; left:0; }
+    @keyframes floatUp{
+      from{ transform: translateY(120vh) rotate(45deg) scale(.9); }
+      to{ transform: translateY(-20vh) rotate(45deg) scale(1.2); }
+    }
+
+    .card{
+      width:min(520px, 100%);
+      background: var(--card);
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:22px;
+      backdrop-filter: blur(14px);
+      position:relative;
+    }
+
+    .top{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:14px;
+    }
+    .badge{
+      width:54px; height:54px;
+      border-radius:18px;
+      background: linear-gradient(135deg, rgba(168,85,247,.9), rgba(124,58,237,.75));
+      display:grid;
+      place-items:center;
+      font-size:26px;
+      border:1px solid rgba(255,255,255,.18);
+    }
+    h1{
+      font-size: clamp(22px, 4.8vw, 32px);
+      margin:0;
+      line-height:1.1;
+      letter-spacing:.2px;
+    }
+    p{
+      margin:10px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height:1.55;
+    }
+
+    .question{
+      margin:18px 0 14px;
+      padding:16px;
+      border-radius:22px;
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .question .big{
+      margin:0;
+      font-size: clamp(22px, 5.2vw, 36px);
+      font-weight:800;
+      color: var(--text);
+    }
+    .question .sub{
+      margin-top:8px;
+      font-size:14px;
+    }
+
+    .btnRow{
+      display:flex;
+      gap:12px;
+      margin-top:16px;
+      position:relative;
+      flex-wrap:wrap;
+    }
+    button{
+      border:0;
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor:pointer;
+      min-width: 140px;
+      flex:1;
+      transition: transform .12s ease, filter .12s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
+    }
+    button:active{ transform: scale(.98); }
+    .yes{
+      background: linear-gradient(135deg, var(--purple), var(--purple2));
+      color:white;
+      box-shadow: 0 14px 36px rgba(168,85,247,.35);
+    }
+    .yes:hover{ filter: brightness(1.05); }
+    .no{
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.18);
+      color: var(--text);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .footer{
+      margin-top:14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      color: rgba(246,241,255,.65);
+      font-size:12px;
+    }
+    .pill{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.12);
+    }
+
+    /* modal */
+    .overlay{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(8px);
+      z-index:50;
+    }
+    .modal{
+      width:min(520px, 100%);
+      background: rgba(26,16,42,.92);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius: 26px;
+      padding:18px;
+      box-shadow: var(--shadow);
+    }
+    .modal h2{
+      margin:0;
+      font-size:22px;
+    }
+    .modal p{ margin-top:10px; }
+    .modal .actions{
+      display:flex;
+      gap:10px;
+      margin-top:16px;
+    }
+    .close{
+      background: rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.18);
+      color: var(--text);
+      flex:1;
+    }
+    .share{
+      background: linear-gradient(135deg, rgba(251,113,133,.95), rgba(168,85,247,.85));
+      color:white;
+      flex:1;
+    }
+
+    /* tiny confetti dots */
+    .confetti{
+      position:fixed; inset:0;
+      pointer-events:none;
+      display:none;
+      z-index:60;
+    }
+    .dot{
+      position:absolute;
+      width:8px; height:8px;
+      border-radius:50%;
+      opacity:.9;
+      animation: fall 1.3s ease-out forwards;
+    }
+    @keyframes fall{
+      from{ transform: translateY(-30px) scale(1); opacity:1; }
+      to{ transform: translateY(110vh) scale(.7); opacity:0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hearts" id="hearts"></div>
+
+  <main class="card" aria-label="Girlfriend proposal card">
+    <div class="top">
+      <div class="badge">💜</div>
+      <div>
+        <h1 id="titleText">Hey <span id="nameText">you</span>…</h1>
+        <p id="introText">I made a tiny purple corner of the internet just to ask you something important 🥺</p>
+      </div>
+    </div>
+
+    <section class="question">
+      <p class="big" id="questionText">Will you be my girlfriend?</p>
+      <p class="sub" id="subText">No pressure. But also… I’ll be very happy if you say yes 😭💜</p>
+    </section>
+
+    <div class="btnRow">
+      <button class="yes" id="yesBtn">Yes 💜</button>
+      <button class="no" id="noBtn">No 🙈</button>
+    </div>
+
+    <div class="footer">
+      <div class="pill" id="tinyNote">Made with love + purple vibes ✨</div>
+      <div class="pill" id="counterPill">No tries: <span id="noCount">0</span></div>
+    </div>
+  </main>
+
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h2>YAYYYYY 💜</h2>
+      <p id="yesMessage">
+        You just made my day.  
+        I promise to treat you with love, respect, and lots of cute moments 🫶
+      </p>
+      <div class="actions">
+        <button class="close" id="closeBtn">Aww 🥺</button>
+        <button class="share" id="shareBtn">Share Screenshot ✨</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="confetti" id="confetti"></div>
+
+  <script>
+    // Personalize via URL like: index.html?name=Anu
+    const params = new URLSearchParams(location.search);
+    const name = params.get("name");
+    if (name) document.getElementById("nameText").textContent = name;
+
+    // Floating hearts generator
+    const hearts = document.getElementById("hearts");
+    for (let i = 0; i < 18; i++) {
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.style.left = Math.random() * 100 + "vw";
+      h.style.animationDelay = (-Math.random() * 8) + "s";
+      h.style.animationDuration = (6 + Math.random() * 5) + "s";
+      h.style.opacity = (0.35 + Math.random() * 0.5);
+      h.style.transform = `translateY(${Math.random()*100}vh) rotate(45deg)`;
+      hearts.appendChild(h);
+    }
+
+    // No button playful runaway
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const noCountEl = document.getElementById("noCount");
+    let noCount = 0;
+
+    function moveNoButton() {
+      noCount++;
+      noCountEl.textContent = String(noCount);
+
+      const card = document.querySelector(".card");
+      const rect = card.getBoundingClientRect();
+
+      // keep it within card area
+      const maxX = rect.width - noBtn.offsetWidth - 10;
+      const maxY = rect.height - noBtn.offsetHeight - 10;
+
+      const x = Math.max(10, Math.floor(Math.random() * maxX));
+      const y = Math.max(10, Math.floor(Math.random() * maxY));
+
+      noBtn.style.position = "absolute";
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+
+    // On mobile, use touchstart for instant reaction
+    noBtn.addEventListener("mouseenter", moveNoButton);
+    noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); moveNoButton(); }, {passive:false});
+    noBtn.addEventListener("click", moveNoButton);
+
+    // Yes modal + confetti dots
+    const overlay = document.getElementById("overlay");
+    const confetti = document.getElementById("confetti");
+
+    function popConfetti() {
+      confetti.innerHTML = "";
+      confetti.style.display = "block";
+      const colors = ["#a855f7","#7c3aed","#fb7185","#f5d0fe","#c4b5fd"];
+      for (let i=0;i<70;i++){
+        const d = document.createElement("div");
+        d.className = "dot";
+        d.style.left = (Math.random()*100) + "vw";
+        d.style.top = (-20 - Math.random()*80) + "px";
+        d.style.background = colors[Math.floor(Math.random()*colors.length)];
+        d.style.animationDelay = (Math.random()*0.25) + "s";
+        confetti.appendChild(d);
+      }
+      setTimeout(()=> confetti.style.display="none", 1600);
+    }
+
+    yesBtn.addEventListener("click", () => {
+      popConfetti();
+      overlay.style.display = "flex";
+    });
+
+    document.getElementById("closeBtn").addEventListener("click", () => {
+      overlay.style.display = "none";
+    });
+
+    // Share helper (mobile friendly): prompts screenshot
+    document.getElementById("shareBtn").addEventListener("click", async () => {
+      // Some browsers support Web Share API
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: "One Question 💜",
+            text: "Open this 😳💜",
+            url: location.href
+          });
+        } catch(e) {}
+      } else {
+        alert("Take a screenshot and send it 💜");
+      }
+    });
+  </script>
+</body>
+</html>
